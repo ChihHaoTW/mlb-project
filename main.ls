@@ -17,11 +17,13 @@ for let number in stock
 
 function parse-data data
   for i in data
-    for key, value of i
-      return if not isNaN value
-      console.log value
 
-function A_D high, low, close, volume
-  ((close - low) - (high - close)) / (high - low) * volume
+    #for key, value of i
+    #  return if not isNaN value
+    #  console.log value
+
+function A_D obj
+#high, low, close, volume
+  ((obj[\close] - obj[\low]) - (obj[\high] - obj[\close])) / (obj[\high] - obj[\low]) * obj[\volume]
 
 # vi:et:sw=2:ts=2
