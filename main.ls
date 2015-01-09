@@ -13,17 +13,17 @@ for let number in stock
       return if isNaN parseFloat that.1
       one-data.push {date: parseFloat(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
   .then ->
-#   parse-data one-data
+    parse-data one-data
 
-  parse-data(get-index \wti)
+#console.log(get-index \wti)
+#console.log(get-index \bdi)
 
 function get-index
   arr = []
-  line-reader.each-line it, (line)!->
-    if /(.+?),(.+?)/ is line
-#     return if isNaN parseFloat that.1
-      arr.push {date: parseFloat(that.1), index: parseFloat(that.2)}
-  console.log arr
+  data = (fs.read-file-sync it, \utf8) / \\n
+  for line in data
+    word = line / \,
+    arr.push {date: word.0, index: word.1}
   arr
 
 function parse-data data
