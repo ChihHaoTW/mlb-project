@@ -10,10 +10,10 @@ for let number in stock
   lineReader.each-line stock-dir+number, !->
     # console.log line
     if /(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+)/ is it
-      return if isNaN parseFloat that.1
-      one-data.push {date: parseFloat(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
+      return if isNaN parseFloat that.2
+      one-data.push {date: that.1, open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
   .then ->
-    parse-data one-data
+#   parse-data one-data
 
 #console.log(get-index \wti)
 #console.log(get-index \bdi)
