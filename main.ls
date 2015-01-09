@@ -23,7 +23,7 @@ function get-index
   data = (fs.read-file-sync it, \utf8) / \\n
   for line in data
     word = line / \,
-    arr.push {date: word.0, index: word.1}
+    arr.push {date: moment(word.0), index: parseFloat(word.1)}
   arr
 
 function parse-data data
