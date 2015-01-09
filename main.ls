@@ -1,4 +1,4 @@
-require! <[fs async line-reader]>
+require! <[fs async line-reader moment]>
 
 stock-dir = \/home/mlb/stock/
 stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 5607]>
@@ -11,7 +11,7 @@ for let number in stock
     # console.log line
     if /(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+)/ is it
       return if isNaN parseFloat that.2
-      one-data.push {date: that.1, open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
+      one-data.push {date: moment(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
   .then ->
 #   parse-data one-data
 
