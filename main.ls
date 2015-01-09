@@ -11,12 +11,13 @@ for let number in stock
     # console.log line
     if /(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+)/ is line
       return if isNaN parseFloat that.1
-      one-data.push {date:parseFloat(that.1), open:parseFloat(that.2), high:parseFloat(that.3), low:parseFloat(that.4), close:parseFloat(that.5), volume:parseInt(that.6), adj:parseFloat(that.7)}
+      one-data.push {stock:parseInt(number), date:parseFloat(that.1), open:parseFloat(that.2), high:parseFloat(that.3), low:parseFloat(that.4), close:parseFloat(that.5), volume:parseInt(that.6), adj:parseFloat(that.7)}
   .then ->
     parse-data one-data
 
 function parse-data data
   for i in data
+    console.log A_D i
 
     #for key, value of i
     #  return if not isNaN value
