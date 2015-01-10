@@ -4,11 +4,10 @@ stock-dir = \/home/mlb/stock/
 stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 5607]>
 
 orig-data = []
-wti = filter-date (get-index \wti), \2010-01-01, \2014-12-31
-bdi = filter-date (get-index \bdi), \2010-01-01, \2014-12-31
+wti = filter-date (get-index \wti), \2010-01-01, \2015-12-31
+bdi = filter-date (get-index \bdi), \2010-01-01, \2015-12-31
 
-console.log (filter-date (get-index \wti), \2010-01-01, \2014-12-31).length
-console.log (combine bdi, wti, \bdi).1
+console.log (combine bdi, wti, \wti)[bdi.length-1]
 #console.log(get-index \bdi)
 
 function get-stock
@@ -27,12 +26,10 @@ function combine a, b, name
   n = 0
   tmp = d[n]
   for i from 0 til c.length
-    if c[i].date.is-same tmp.date
-      c[i]."#name" = tmp.index
-    else if c[i].date.is-after tmp.date
-      n++
-      tmp = c[n]
-      c[i]."#name" = tmp.index
+    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date
+      c[i]."#name" = d[n].index
+    else
+      if n < d.length-1 then c[i]."#name" = d[++n].index else break
   c
 
 
