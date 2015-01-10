@@ -26,8 +26,7 @@ function combine a, b, name
   n = 0
   tmp = d[n]
   for i from 0 til c.length
-    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date
-      c[i]."#name" = d[n].index
+    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date then c[i]."#name" = d[n].index
     else
       if n < d.length-1 then c[i]."#name" = d[++n].index else break
   c
@@ -44,8 +43,7 @@ function ml-format
   for i from 0 til it.0.length
     count = 1
     buf += \0
-    for feature in it
-      buf += "\t#{count++}:#{feature[i]}"
+    for feature in it then buf += "\t#{count++}:#{feature[i]}"
     buf += \\n
   buf
 
@@ -60,8 +58,7 @@ function get-index
 function filter-date target, begin, end
   arr = []
   for day in target
-    if day.date.is-between begin, end
-      arr.push day
+    if day.date.is-between begin, end then arr.push day
   arr
 
 function parse-data
@@ -74,8 +71,7 @@ function parse-data
     #  return if not isNaN value
     #  console.log value
 
-function A_D
 #high, low, close, volume
-  ((it[\close] - it[\low]) - (it[\high] - it[\close])) / (it[\high] - it[\low]) * it[\volume]
+function A_D then ((it[\close] - it[\low]) - (it[\high] - it[\close])) / (it[\high] - it[\low]) * it[\volume]
 
 # vi:et:sw=2:ts=2
