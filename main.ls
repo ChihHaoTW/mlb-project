@@ -26,8 +26,8 @@ function get-index
     arr.push {date: moment(word.0), index: parseFloat(word.1)}
   arr
 
-function parse-data data
-  for i in data
+function parse-data
+  for i in it
     for key, value of i
       #return if not isNaN value
       console.log key, value
@@ -36,8 +36,8 @@ function parse-data data
     #  return if not isNaN value
     #  console.log value
 
-function A_D obj
+function A_D
 #high, low, close, volume
-  ((obj[\close] - obj[\low]) - (obj[\high] - obj[\close])) / (obj[\high] - obj[\low]) * obj[\volume]
+  ((it[\close] - it[\low]) - (it[\high] - it[\close])) / (it[\high] - it[\low]) * it[\volume]
 
 # vi:et:sw=2:ts=2
