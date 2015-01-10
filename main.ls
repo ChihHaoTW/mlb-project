@@ -28,8 +28,21 @@ function combine a, b, name
   for i from 0 til c.length
     if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date then c[i]."#name" = d[n].index
     else
-      if n < d.length-1 then c[i]."#name" = d[++n].index else break
+      if n < d.length-1 then c[i]."#name" = d[++n].index else arr.push d[n].index
   c
+
+console.log bdi.length
+console.log(stretch wti, bdi .length)
+
+function stretch a, b
+  [c, d] = if a.length > b.length then [a, b] else [b, a]
+  n = 0
+  arr = []
+  for i from 0 til c.length
+    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date then arr.push d[n].index
+    else
+      if n < d.length-1	then arr.push d[++n].index else arr.push d[n].index
+  arr
 
 a = [1,2,3]
 b = [1,4,3]
