@@ -4,8 +4,11 @@ stock-dir = \/home/mlb/stock/
 stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 5607]>
 
 orig-data = []
+wti = filter-date (get-index \wti), \2010-01-01, \2014-12-31
+bdi = filter-date (get-index \bdi), \2010-01-01, \2014-12-31
 
 console.log (filter-date (get-index \wti), \2010-01-01, \2014-12-31).length
+console.log (combine bdi, wti, \bdi).1
 #console.log(get-index \bdi)
 
 function get-stock
@@ -19,6 +22,20 @@ function get-stock
     .then ->
   #   parse-data one-data
 
+function combine a, b, name
+  [c, d] = if a.length > b.length then [a, b] else [b, a]
+  n = 0
+  tmp = d[n]
+  for i from 0 til c.length
+    if c[i].date.is-same tmp.date
+      c[i]."#name" = tmp.index
+    else if c[i].date.is-after tmp.date
+      n++
+      tmp = c[n]
+      c[i]."#name" = tmp.index
+  c
+
+
 function get-index
   arr = []
   data = (fs.read-file-sync it, \utf8) / \\n
@@ -28,7 +45,6 @@ function get-index
   arr
 
 function filter-date target, begin, end
-  console.log begin, end
   arr = []
   for day in target
     if day.date.is-between begin, end
