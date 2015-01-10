@@ -26,6 +26,13 @@ function get-index
     arr.push {date: moment(word.0), index: parseFloat(word.1)}
   arr
 
+function filter-date target, begin, end
+  arr = []
+  for day in target
+    if day.date.is-between begin, end
+      arr.push day
+  arr
+
 function parse-data
   for i in it
     for key, value of i
