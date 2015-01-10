@@ -7,7 +7,7 @@ orig-data = []
 wti = filter-date (get-index \wti), \2010-01-01, \2015-12-31
 bdi = filter-date (get-index \bdi), \2010-01-01, \2015-12-31
 
-console.log (combine bdi, wti, \wti)[bdi.length-1]
+#console.log (combine bdi, wti, \wti)
 #console.log(get-index \bdi)
 
 function get-stock
@@ -32,6 +32,22 @@ function combine a, b, name
       if n < d.length-1 then c[i]."#name" = d[++n].index else break
   c
 
+a = [1,2,3]
+b = [1,4,3]
+
+c = [a, b]
+console.log(ml-format c)
+
+function ml-format
+  buf = ''
+  count = 1
+  for i from 0 til it.0.length
+    count = 1
+    buf += \0
+    for feature in it
+      buf += "\t#{count++}:#{feature[i]}"
+    buf += \\n
+  buf
 
 function get-index
   arr = []
