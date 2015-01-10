@@ -5,18 +5,19 @@ stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 
 
 orig-data = []
 
-for let number in stock
-  one-data = []
-  lineReader.each-line stock-dir+number, !->
-    # console.log line
-    if /(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+)/ is it
-      return if isNaN parseFloat that.2
-      one-data.push {date: moment(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
-  .then ->
-#   parse-data one-data
-
-#console.log(get-index \wti)
+console.log(filter-date get-index \wti, \2010-01-01, \2014-12-31)
 #console.log(get-index \bdi)
+
+function get-stock
+  for let number in stock
+    one-data = []
+    lineReader.each-line stock-dir+number, !->
+      # console.log line
+      if /(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+)/ is it
+        return if isNaN parseFloat that.2
+        one-data.push {date: moment(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
+    .then ->
+  #   parse-data one-data
 
 function get-index
   arr = []
@@ -29,7 +30,7 @@ function get-index
 function filter-date target, begin, end
   arr = []
   for day in target
-    if day.date.is-between begin, end
+    if day.date.is-date and day.date.is-between begin, end
       arr.push day
   arr
 
