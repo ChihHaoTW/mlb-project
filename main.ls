@@ -100,4 +100,17 @@ function parse-data
 #high, low, close, volume
 function A_D then ((it[\close] - it[\low]) - (it[\high] - it[\close])) / (it[\high] - it[\low]) * it[\volume]
 
+# %K need to input a array of last 15 days stock object including current day at the first index
+function Persent-K
+  cur-ob j = it.shift!
+  last-obj = it.pop!
+
+  [low, high] = [last-obj[\low], last-obj[\high]]
+
+  for obj in it
+    if obj[\low]  < low  then low  = obj[\low]
+    if obj[\high] > high then high = obj[\high]
+
+  (cur-obj[\close] - low) / (high - low) * 100
+
 # vi:et:sw=2:ts=2
