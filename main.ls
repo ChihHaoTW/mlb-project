@@ -37,12 +37,12 @@ console.log(stretch wti, bdi .length)
 function stretch a, b
   [c, d] = if a.length > b.length then [a, b] else [b, a]
   n = 0
-  arr = []
+  _ = []
   for i from 0 til c.length
-    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date then arr.push d[n].index
+    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date then _.push d[n].index
     else
-      if n < d.length-1	then arr.push d[++n].index else arr.push d[n].index
-  arr
+      if n < d.length-1	then _.push d[++n].index else _.push d[n].index
+  _
 
 a = [1,2,3]
 b = [1,4,3]
@@ -60,19 +60,32 @@ function ml-format
     buf += \\n
   buf
 
+#test = [{date: moment \2012-03-21}, {date: moment \2012-06-01}]
+#console.log(season test)
+
+function season
+  _ = []
+  for day in it then _.push switch day.date.month! + 1
+                            | 3, 4, 5 => 1
+                            | 6, 7, 8 => 2
+                            | 9, 10, 11 => 3
+                            | 12, 1, 2 => 4
+  _
+
+
 function get-index
-  arr = []
+  _ = []
   data = (fs.read-file-sync it, \utf8) / \\n
   for line in data
     word = line / \,
-    if moment(word.0).is-valid! then arr.push {date: moment(word.0), index: parseFloat(word.1)}
-  arr
+    if moment(word.0).is-valid! then _.push {date: moment(word.0), index: parseFloat(word.1)}
+  _
 
 function filter-date target, begin, end
-  arr = []
+  _ = []
   for day in target
-    if day.date.is-between begin, end then arr.push day
-  arr
+    if day.date.is-between begin, end then _.push day
+  _
 
 function parse-data
   for i in it
