@@ -19,7 +19,7 @@ function get-stock
         return if isNaN parseFloat that.2
         one-data.push {date: moment(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
     .then ->
-  #   parse-data one-data
+      parse-data one-data
 
 function combine a, b, name
   [c, d] = if a.length > b.length then [a, b] else [b, a]
@@ -88,10 +88,11 @@ function filter-date target, begin, end
   _
 
 function parse-data
-  for i in it
-    for key, value of i
-      #return if not isNaN value
-      console.log key, value
+ console.log percent-K it
+  # for i in it
+  #   for key, value of i
+  #     #return if not isNaN value
+  #     console.log key, value
 
     #for key, value of i
     #  return if not isNaN value
@@ -104,16 +105,13 @@ function A_D then ((it[\close] - it[\low]) - (it[\high] - it[\close])) / (it[\hi
 function percent-K
   result = []
   ary = it.reverse!
-  [low, high] = [ary[0][\low], ary[0][\high]]
+  # [low, high] = [ary[0][\low], ary[0][\high]]
 
-  for i from 0 til ary.length
-    obj = ary[i]
-    if obj[\low]  < low  then low  = obj[\low]
-    if obj[\high] > high then high = obj[\high]
+  for i from 15 til ary.length
+    [low, high] = find-lowest-highest(for j from i - 15 til i then ary[j])[\low, \high]
+    result.push((ary[i][\close] - low) / (high - low) * 100)
 
-    if i >= 15
-      (obj[\close] - low) / (high - low) * 100
-
+  result
 
   #cur-obj = it.shift!
   #last-obj = it.pop!
@@ -134,5 +132,7 @@ function find-lowest-highest
     if obj[\high] > high then high = obj[\high]
 
   {low: low, high: high}
+
+get-stock!
 
 # vi:et:sw=2:ts=2
