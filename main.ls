@@ -55,11 +55,10 @@ function stretch a, b
 a = [1,2,3]
 b = [1,4,3]
 
+d = close-diff [{close: 1}, {close: 4}, {close: 3}]
 c = [a, b]
-console.log(ml-format c)
+console.log(ml-format c, d)
 
-a = [{close: 1}, {close: 4}, {close: 3}]
-console.log(close-diff a)
 
 function close-diff
   _ = []
@@ -69,13 +68,13 @@ function close-diff
       if (it[i].close - it[i + 1].close) > 0 then _.push 1 else _.push 0
   _
 
-function ml-format
+function ml-format features, diff
   buf = ''
   count = 1
-  for i from 0 til it.0.length
+  for i from 0 til features.0.length
     count = 1
-    buf += \0
-    for feature in it then buf += "\t#{count++}:#{feature[i]}"
+    buf += diff[i]
+    for feature in features then buf += "\t#{count++}:#{feature[i]}"
     buf += \\n
   buf
 
