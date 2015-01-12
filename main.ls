@@ -182,8 +182,8 @@ function ROC ary, n
 
 function momentum
   result = []
-  for i from 0 til ary.length - 4
-    result.push (ary[i][\close] - ary[i + 4][\close]) / ary[i + 4][\close]
+  for i from 0 til it.length - 4
+    result.push (it[i][\close] - it[i + 4][\close]) / it[i + 4][\close]
 
   result
 
