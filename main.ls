@@ -133,6 +133,16 @@ function find-lowest-highest
 
   {low: low, high: high}
 
-get-stock!
+function sma ary, n
+  result = []
+  for i from n til ary.length
+    result.push close-avg(for j from i - n til i then ary[j])
+
+  result
+
+# count the average of the input array's own property "close"
+function close-avg
+  (it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length
+
 
 # vi:et:sw=2:ts=2
