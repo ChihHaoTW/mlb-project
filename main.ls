@@ -33,8 +33,23 @@ function get-stock
     .then ->
       change = close-diff one-data
       weather = season one-data
-      fs.write-file-sync "stock/#number/train_data", (ml-format [weather], change)
+      raw-data = ml-format [weather], change
+      console.log(get-data raw-data, \predict, [0, 0.25])
+#     fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
+#     fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.75])
       #parse-data one-data
+
+function get-data data, type, range
+  buf = ''
+  lines = data / \\n
+  length = lines.length
+  if type is \predict
+    for i from length * range.0 til length * range.1
+      if /(\d?)\t(.+)/ is lines[i] then buf += "0\t#{that.2}\n"
+  else
+    for i from length * range.0 til length * range.1 then buf += "#{lines[i]}\n"
+  buf
+
 
 function combine a, b, name
   [c, d] = if a.length > b.length then [a, b] else [b, a]
