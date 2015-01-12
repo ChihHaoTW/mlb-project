@@ -129,11 +129,11 @@ function A_D then ((it[\close] - it[\low]) - (it[\high] - it[\close])) / (it[\hi
 # %K need to input a array of last 15 days stock object including current day at the first index
 function percent-K
   result = []
-  ary = it.reverse!
+  # ary = it.reverse!
   # [low, high] = [ary[0][\low], ary[0][\high]]
 
-  for i from 15 til ary.length
-    [low, high] = find-lowest-highest(for j from i - 15 til i then ary[j])[\low, \high]
+  for i from 0 til ary.length - 14
+    [low, high] = find-lowest-highest(for j from i til i + 14 then ary[j])[\low, \high]
     result.push((ary[i][\close] - low) / (high - low) * 100)
 
   result
@@ -164,14 +164,17 @@ function find-lowest-highest
 
 function sma ary, n
   result = []
-  for i from n til ary.length
-    result.push close-avg(for j from i - n til i then ary[j])
+  for i from 0 til ary.length - n
+    result.push close-avg(for j from i til i + n then ary[j])
 
   result
 
 # count the average of the input array's own property "close"
 function close-avg
   (it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length
+
+function ROC ary, n
+  result = []
 
 !function mkdir
   if !fs.exists-sync it
