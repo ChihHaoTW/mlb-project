@@ -153,6 +153,9 @@ function percent-K
 function percent-D
   sma it, 3
 
+function slow-pwecent-D
+  sma (percent-D it), 3
+
 # input : a array of obj which has its own propertys "low" & "high"
 function find-lowest-highest
   [low, high] = it.pop![\low, \high]
