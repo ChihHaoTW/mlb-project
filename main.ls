@@ -175,6 +175,10 @@ function close-avg
 
 function ROC ary, n
   result = []
+  for i from 0 til ary.length - n
+    result.push (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
+
+  result
 
 !function mkdir
   if !fs.exists-sync it
