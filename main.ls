@@ -200,6 +200,12 @@ function momentum
 
   result
 
+function disparity ary, n
+  result = []
+  sma-n = sma it, n
+  for i from 0 til sma-n.length
+    result.push (it[i][\close] / sma-n[i] * 100)
+
 !function mkdir
   if !fs.exists-sync it
     fs.mkdir-sync it
