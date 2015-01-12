@@ -13,11 +13,19 @@ bdi = filter-date (get-index \bdi), \2010-01-01, \2015-12-31
 function get-stock
   for let number in stock
     one-data = []
-    lineReader.each-line stock-dir+number, !->
+    lineReader.each-line stock-dir + number, !->
       # console.log line
       if /(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+)/ is it
         return if isNaN parseFloat that.2
-        one-data.push {date: moment(that.1), open: parseFloat(that.2), high: parseFloat(that.3), low: parseFloat(that.4), close: parseFloat(that.5), volume: parseInt(that.6), adj: parseFloat(that.7)}
+        one-data.push {
+          date: moment(that.1),
+          open: parseFloat(that.2),
+          high: parseFloat(that.3),
+          low: parseFloat(that.4),
+          close: parseFloat(that.5),
+          volume: parseInt(that.6),
+          adj: parseFloat(that.7)
+        }
     .then ->
       parse-data one-data
 
@@ -49,6 +57,17 @@ b = [1,4,3]
 
 c = [a, b]
 console.log(ml-format c)
+
+a = [{close: 1}, {close: 4}, {close: 3}]
+console.log(close-diff a)
+
+function close-diff
+  _ = []
+  for i from 0 til it.length
+    unless it[i + 1] then _.push 0
+    else
+      if (it[i].close - it[i + 1].close) > 0 then _.push 1 else _.push 0
+  _
 
 function ml-format
   buf = ''
