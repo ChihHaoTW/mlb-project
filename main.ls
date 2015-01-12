@@ -221,6 +221,17 @@ function disparity ary, n
   for i from 0 til sma-n.length
     result.push (it[i][\close] / sma-n[i] * 100)
 
+  result
+
+function OSCP
+  result = []
+  sma_5  = sma it, 5
+  sma_10 = sma it, 10
+  for i from 0 til sma_5.length
+    result.push (sma_5[i] - sma_10[i]) / sma_5[i]
+
+  result
+
 !function mkdir
   if !fs.exists-sync it
     fs.mkdir-sync it
