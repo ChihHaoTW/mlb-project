@@ -180,6 +180,13 @@ function ROC ary, n
 
   result
 
+function momentum
+  result = []
+  for i from 0 til ary.length - 4
+    result.push (ary[i][\close] - ary[i + 4][\close]) / ary[i + 4][\close]
+
+  result
+
 !function mkdir
   if !fs.exists-sync it
     fs.mkdir-sync it
