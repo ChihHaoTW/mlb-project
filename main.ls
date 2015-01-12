@@ -10,6 +10,8 @@ bdi = filter-date (get-index \bdi), \2010-01-01, \2015-12-31
 #console.log (combine bdi, wti, \wti)
 #console.log(get-index \bdi)
 
+get-stock!
+
 function get-stock
   for let number in stock
     one-data = []
@@ -27,7 +29,10 @@ function get-stock
           adj: parseFloat(that.7)
         }
     .then ->
-      parse-data one-data
+      change = close-diff one-data
+      weather = season one-data
+      fs.write-file-sync \train_data, (ml-format [weather], change)
+      #parse-data one-data
 
 function combine a, b, name
   [c, d] = if a.length > b.length then [a, b] else [b, a]
@@ -39,8 +44,8 @@ function combine a, b, name
       if n < d.length-1 then c[i]."#name" = d[++n].index else arr.push d[n].index
   c
 
-console.log bdi.length
-console.log(stretch wti, bdi .length)
+#console.log bdi.length
+#console.log(stretch wti, bdi .length)
 
 function stretch a, b
   [c, d] = if a.length > b.length then [a, b] else [b, a]
@@ -52,12 +57,12 @@ function stretch a, b
       if n < d.length-1	then _.push d[++n].index else _.push d[n].index
   _
 
-a = [1,2,3]
-b = [1,4,3]
+#a = [1,2,3]
+#b = [1,4,3]
 
-d = close-diff [{close: 1}, {close: 4}, {close: 3}]
-c = [a, b]
-console.log(ml-format c, d)
+#d = close-diff [{close: 1}, {close: 4}, {close: 3}]
+#c = [a, b]
+#console.log(ml-format c, d)
 
 
 function close-diff
