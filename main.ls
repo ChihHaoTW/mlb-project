@@ -1,5 +1,6 @@
 require! <[fs async line-reader moment]>
 
+
 stock-dir = \/home/mlb/stock/
 stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 5607]>
 
@@ -14,6 +15,7 @@ get-stock!
 
 function get-stock
   for let number in stock
+    mkdir "./stock/#number/"
     one-data = []
     lineReader.each-line stock-dir + number, !->
       # console.log line
@@ -31,7 +33,7 @@ function get-stock
     .then ->
       change = close-diff one-data
       weather = season one-data
-      fs.write-file-sync \train_data, (ml-format [weather], change)
+      fs.write-file-sync "stock/#number/train_data", (ml-format [weather], change)
       #parse-data one-data
 
 function combine a, b, name
@@ -171,5 +173,10 @@ function sma ary, n
 function close-avg
   (it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length
 
+!function mkdir
+  if !fs.exists-sync it
+    fs.mkdir-sync it
+  else if !fs.stat-sync it .is-directory
+    fs.mkdir-sync it
 
 # vi:et:sw=2:ts=2
