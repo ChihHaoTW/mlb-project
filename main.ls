@@ -149,10 +149,20 @@ function percent-K
 
   #(cur-obj[\close] - low) / (high - low) * 100
 
+function percent-R
+  result = []
+  for i from 0 til ary.length - 14
+    [low, high] = find-lowest-highest(for j from i til i + 14 then ary[j])[\low, \high]
+    result.push((high - ary[i][\close]) / (high - low) * 100)
+
+  result
+
 # input the result of %K
 function percent-D
   sma it, 3
 
+# input the result of %K
+# OR can input the result of %D to %D
 function slow-pwecent-D
   sma (percent-D it), 3
 
