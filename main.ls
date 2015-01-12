@@ -124,6 +124,10 @@ function percent-K
 
   #(cur-obj[\close] - low) / (high - low) * 100
 
+# input the result of %K
+function percent-D
+  sma it, 3
+
 # input : a array of obj which has its own propertys "low" & "high"
 function find-lowest-highest
   [low, high] = it.pop![\low, \high]
