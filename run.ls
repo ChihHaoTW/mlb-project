@@ -30,7 +30,7 @@ function tune train-result, dir
     console.log "./rvkde --best --cv --classify -b 1,#beta,1 --ks 1,#ks,1 --kt 1,#kt,1 -n 5 -v #{dir}/train_data.scale"
 
     if test-result is /\[score\]\n([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)/
-      [r-beta, r-ks, r-kt] = [that[2], that[3], that[4]]
+      [r-beta, r-ks, r-kt] = [parseInt(that[2]), parseInt(that[3]), parseInt(that[4])]
       if r-beta is beta
         beta += 10
         check = true
@@ -42,6 +42,8 @@ function tune train-result, dir
         check = true
 
     break if not check
+
+  console.log  [r-beta, r-ks, r-kt]
 
   [r-beta, r-ks, r-kt]
 
