@@ -7,10 +7,10 @@ for let name in stocks
   scale = "./svm-scale -s train_scale_model #{dir}/train_data"
   rvkde = "./rvkde --best --cv --classify -n 5 -v #{dir}/train_data.scale"
   predict-scale = "./svm-scale -s predict_scale_model #{dir}/predict_data"
-  predict-rvkde = "./rvkde --best --predict --classify -v #{dir}/train_data.scale -V #{dir}/predict_data.scale"
+  [beta, ks, kt] = tune exec-sync.exec(rvkde).stdout, dir
+  predict-rvkde = "./rvkde --best --predict --classify -b #beta --ks #ks --kt #kt -v #{dir}/train_data.scale -V #{dir}/predict_data.scale"
   fs.write-file-sync "#dir/train_data.scale", exec-sync.exec(scale).stdout
 #  fs.write-file-sync "#dir/train_result", exec-sync.exec(rvkde).stdout
-  tune exec-sync.exec(rvkde).stdout, dir
 #  fs.write-file-sync "#dir/predict_data.scale", exec-sync.exec(predict-scale).stdout
 #  fs.write-file-sync "#dir/predict_result", exec-sync.exec(predict-rvkde).stdout
 
@@ -27,7 +27,7 @@ function tune train-result, dir
     check = false
 
     test-result = exec-sync.exec("./rvkde --best --cv --classify -b 1,#beta,1 --ks 1,#ks,1 --kt 1,#kt,1 -n 5 -v #{dir}/train_data.scale").stdout
-    console.log "./rvkde --best --cv --classify -b 1,#beta,1 --ks 1,#ks,1 --kt 1,#kt,1 -n 5 -v #{dir}/train_data.scale"
+   #  console.log "./rvkde --best --cv --classify -b 1,#beta,1 --ks 1,#ks,1 --kt 1,#kt,1 -n 5 -v #{dir}/train_data.scale"
 
     if test-result is /\[score\]\n([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)/
       [r-beta, r-ks, r-kt] = [parseInt(that[2]), parseInt(that[3]), parseInt(that[4])]
@@ -42,8 +42,6 @@ function tune train-result, dir
         check = true
 
     break if not check
-
-  console.log  [r-beta, r-ks, r-kt]
 
   [r-beta, r-ks, r-kt]
 
