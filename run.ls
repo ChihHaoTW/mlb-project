@@ -16,27 +16,33 @@ for let name in stocks
 
 # input the rsult of train_result
 function tune train-result, dir
-  result-line = train-result / "\n"
-  [alpha, beta, ks, kt, score] = result-line[11] / " "
-  beta += 10
-  ks += 10
-  kt += 10
+  if train-result is /\[score\]\n([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)/
+  # result-line = train-result / "\n"
+    #  [void, alpha, beta, ks, kt, score] = that
+    beta = (parseInt that[2]) + 10
+    ks   = (parseInt that[3]) + 10
+    kt   = (parseInt that[4]) + 10
 
   loop
+    check = false
+
     test-result = exec-sync.exec("./rvkde --best --cv --classify -b 1,#beta,1 --ks 1,#ks,1 --kt 1,#kt,1 -n 5 -v #{dir}/train_data.scale").stdout
+    console.log "./rvkde --best --cv --classify -b 1,#beta,1 --ks 1,#ks,1 --kt 1,#kt,1 -n 5 -v #{dir}/train_data.scale"
 
-    para = (test-result / "\n")[11] / " "
-    if para[1] is beta
-      beta += 10
-      continue
-    if para[2] is ks
-      ks += 10
-      continue
-    if para[3] is kt
-      kt += 10
-      continue
-    break
+    if test-result is /\[score\]\n([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)\s([0-9.]+)/
+      [r-beta, r-ks, r-kt] = [that[2], that[3], that[4]]
+      if r-beta is beta
+        beta += 10
+        check = true
+      if r-ks is ks
+        ks += 10
+        check = true
+      if r-kt is kt
+        kt += 10
+        check = true
 
-  [alpha, beta, ks, kt, score]
+    break if not check
+
+  [r-beta, r-ks, r-kt]
 
 # vi:et:sw=2:ts=2
