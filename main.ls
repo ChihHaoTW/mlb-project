@@ -43,11 +43,12 @@ function get-data data, type, range
   buf = ''
   lines = data / \\n
   length = lines.length
-  if type is \predict
-    for i from parse-int(length * range.0) til parse-int(length * range.1)
-      if /(\d?)\t(.+)/ is lines[i] then buf += "0\t#{that.2}\n"
-  else
-    for i from parse-int(length * range.0) til parse-int(length * range.1) then buf += "#{lines[i]}\n"
+  for i from parse-int(length * range.0) til parse-int(length * range.1) then buf += "#{lines[i]}\n"
+  # if type is \predict
+  #   for i from parse-int(length * range.0) til parse-int(length * range.1) then buf += "#{lines[i]}\n"
+  #     if /(\d?)\t(.+)/ is lines[i] then buf += "0\t#{that.2}\n"
+  # else
+  #   for i from parse-int(length * range.0) til parse-int(length * range.1) then buf += "#{lines[i]}\n"
   buf
 
 
