@@ -1,4 +1,4 @@
-require! <[fs async line-reader moment]>
+require! <[fs async line-reader moment execSync]>
 
 
 stock-dir = \/home/mlb/stock/
@@ -232,10 +232,12 @@ function close-avg
   it = it.map -> it.close
   (it.reduce (a, b) -> (a + b), 0) / it.length
 
+# need to input a number n
 function ROC ary, n then for i from 0 til ary.length - n then (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
 
 function momentum then for i from 0 til it.length - 4 then (it[i][\close] - it[i + 4][\close]) / it[i + 4][\close]
 
+# need to input 5 ro 10
 function disparity ary, n
   result = []
   sma-n = sma ary, n
@@ -252,6 +254,14 @@ function OSCP
     result.push (sma_5[i] - sma_10[i]) / sma_5[i]
 
   result
+
+# input the string of date e.g. 104/01/14
+function date-shipping
+  total = exec-sync.exec("curl --data 'download=csv&qdate=#it&selectType=MS' http://www.twse.com.tw/ch/trading/exchange/MI_INDEX/MI_INDEX.php | iconv -f BIG-5 -t UTF-8").stdout
+  if total is /航運類指數,(.+),(\+|-),(.+),(.+)/
+    [index, change, change-num, change-percent] = [parseFloat(that[1]), that[2], parseFloat(that[3]), parseFloat(that[4])]
+
+  [index, change, change-num, change-percent]
 
 !function mkdir
   if !fs.exists-sync it then fs.mkdir-sync it
