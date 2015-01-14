@@ -34,8 +34,7 @@ function get-stock
 #     percent-D one-data
 #     process.exit 0
       change = close-diff one-data
-      features = get-features one-data
-      features = trim features
+      features = trim(get-features one-data)
       raw-data = ml-format features, change
 #     console.log(get-data(raw-data, \train, [0.25, 1]))
       fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
@@ -54,7 +53,7 @@ get-features = ->
     (percent-R it),
     (percent-D it),
     (for x in it then A_D x),
-#   (for x in it then slow-precent-D it),
+    (slow-precent-D it),
     (ROC it, 14),
     (momentum it),
     (disparity it, 5),
