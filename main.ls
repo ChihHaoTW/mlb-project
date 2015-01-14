@@ -221,10 +221,12 @@ function close-avg
   it = it.map -> it.close
   (it.reduce (a, b) -> (a + b), 0) / it.length
 
+# need to input a number n
 function ROC ary, n then for i from 0 til ary.length - n then (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
 
 function momentum then for i from 0 til it.length - 4 then (it[i][\close] - it[i + 4][\close]) / it[i + 4][\close]
 
+# need to input 5 ro 10
 function disparity ary, n
   result = []
   sma-n = sma ary, n
