@@ -3,10 +3,14 @@ require! <[fs async line-reader moment execSync]>
 
 stock-dir = \/home/mlb/stock/
 stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 5607]>
+all-stock = fs.readdir-sync \/home/mlb/stock/
 
 [min, max] = [\2014-02-01, \2015-01-01]
 wti = filter-date (get-index \wti), min, max
 bdi = filter-date (get-index \bdi), min, max
+ship = JSON.parse(fs.read-file-sync \shipping, \utf8)
+ship = for x in ship then {date: moment(x.date), index: x.index}
+ship = filter-date ship, min, max
 
 #wti = stretch wti, bdi
 #for i from 0 til wti.length then console.log wti[i].date.format!, bdi[i].date.format!
@@ -54,10 +58,15 @@ trim = ->
 
 get-features = ->
   b = for x in (stretch bdi, it) then x.index
-  w = for x in (stretch wti, bdi) then x.index
+  w = for x in (stretch wti, it) then x.index
+  s = for x in it
+        for y in ship
+          if y.date.is-same x.date
+            y.index
   [
     b,
     w,
+    s,
     (season it),
     (percent-K it),
     (percent-R it),
@@ -162,7 +171,9 @@ function get-index
     if moment(word.0).is-valid! then _.push {date: moment(word.0), index: parseFloat(word.1)}
   _
 
-function filter-date target, begin, end then for day in target then if day.date.is-between begin, end then day
+function filter-date target, begin, end
+  for day in target
+    if day.date.is-between begin, end then day
 
 function parse-data
  console.log percent-K it
