@@ -45,10 +45,14 @@ function get-stock
 #     return
       change = close-diff data
       features = trim(get-features data)
+#     for i from 0 til features.length
+#       for j from 0 til features[i].length
+#         if features[i][j]  then console.log i, j
+
       raw-data = ml-format features, change
-#     console.log(get-data(raw-data, \train, [0.25, 1]))
-      fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
-      fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.9])
+#     console.log(get-data(raw-dataaw-data, \train, [0.25, 1]))
+      fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0.75, 0.9])
+      fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0, 0.75])
       #parse-data one-data
 
 trim = ->
@@ -59,28 +63,30 @@ trim = ->
 get-features = ->
   b = for x in (stretch bdi, it) then x.index
   w = for x in (stretch wti, it) then x.index
-  s = for x in it
-        for y in ship
-          if y.date.is-same x.date
-            if y.index > 0 then y.index
-            else 0
-  for x in s
-    if x is 0 then console.log \hi
-  console.log s
+  s = []
+  for x in it
+    for y in ship
+      if y.date.is-same x.date
+        s.push y.index
+       #if y.index > 0 then y.index
+       #else 0
+# for x in s
+#   if x is 0 then console.log \hi
   [
     b,
     w,
-    (season it),
-    (percent-K it),
-    (percent-R it),
-    (percent-D it),
-    (for x in it then A_D x),
+    s,
+#   (season it),
+#   (percent-K it),
+#   (percent-R it),
+#   (percent-D it),
+#   (for x in it then A_D x),
 #   (slow-precent-D it),
-    (ROC it, 14),
-    (momentum it),
-    (disparity it, 5),
-    (disparity it, 10),
-    (OSCP it)
+#   (ROC it, 14),
+#   (momentum it),
+#   (disparity it, 5),
+#   (disparity it, 10),
+#   (OSCP it)
   ]
 
 function get-data data, type, range
@@ -159,10 +165,8 @@ function ml-format features, diff
 function season
   _ = []
   for day in it then _.push switch day.date.month! + 1
-                            | 3, 4, 5 => 1
-                            | 6, 7, 8 => 2
-                            | 9, 10, 11 => 3
-                            | 12, 1, 2 => 4
+                            | 5, 6, 7, 8, 9 => 1
+                            | 1, 2, 3, 4, 10, 11, 12 => 2
   _
 
 
