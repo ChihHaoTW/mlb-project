@@ -12,7 +12,7 @@ loop
   console.log date.format \YYYY/MM/DD
   continue if ary.length is 0
   console.log ary
-  result.push {date: (date.format \YYYY-MM-DD), index: ary[0]}
+  result.push {date: date, index: ary[0]}
 
 fs.write-file-sync "./shipping", JSON.stringify result, null, 2
 
