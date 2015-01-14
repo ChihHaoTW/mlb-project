@@ -62,11 +62,14 @@ get-features = ->
   s = for x in it
         for y in ship
           if y.date.is-same x.date
-            y.index
+            if y.index > 0 then y.index
+            else 0
+  for x in s
+    if x is 0 then console.log \hi
+  console.log s
   [
     b,
     w,
-    s,
     (season it),
     (percent-K it),
     (percent-R it),
