@@ -31,8 +31,8 @@ function get-stock
           adj: parseFloat(that.7)
         }
     .then ->
-      percent-D one-data
-      return
+#     percent-D one-data
+#     return
       change = close-diff one-data
       features = get-features one-data
       features = trim features
@@ -110,7 +110,7 @@ function close-diff
   for i from 0 til it.length
     unless it[i + 1] then _.push 0
     else
-      if (it[i].close - it[i + 1].close) > 0 then _.push 1 else _.push 0
+      if (it[i + 1].close - it[i].close) > 0 then _.push 1 else _.push 0
   _
 
 function ml-format features, diff
