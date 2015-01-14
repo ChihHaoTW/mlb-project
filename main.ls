@@ -219,7 +219,7 @@ function sma ary, n then for i from 0 til ary.length - n then close-avg(for j fr
 # count the average of the input array's own property "close"
 function close-avg
   it = it.map -> it.close
-  (it.reduce (a, b) -> a + b) / it.length
+  (it.reduce (a, b) -> (a + b), 0) / it.length
 
 function ROC ary, n then for i from 0 til ary.length - n then (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
 
