@@ -1,6 +1,6 @@
 require! <[execSync moment fs]>
 
-date = moment \2005-01-01, \YYYY-MM-DD
+date = moment \2010-01-01, \YYYY-MM-DD
 cur-date = moment!
 
 result = []
