@@ -32,7 +32,7 @@ function get-stock
         }
     .then ->
 #     percent-D one-data
-#     return
+#     process.exit 0
       change = close-diff one-data
       features = get-features one-data
       features = trim features
@@ -52,14 +52,17 @@ get-features = ->
     (season it),
     (percent-K it),
     (percent-R it),
-#   (percent-D it),
-#   (slow-precent-D it),
+    (percent-D it),
+    (for x in it then A_D x),
+#   (for x in it then slow-precent-D it),
     (ROC it, 14),
     (momentum it),
-#   (disparity it, 5),
-#   (disparity it, 10),
-#   (OSCP it)
+    (disparity it, 5),
+    (disparity it, 10),
+    (OSCP it)
   ]
+
+looping = (arr, func) -> for x in arr then func x
 
 function get-data data, type, range
   buf = ''
@@ -211,13 +214,12 @@ function find-lowest-highest
 
   {low: low, high: high}
 
-function sma ary, n
-  for i from 0 til ary.length - n
-    close-avg(for j from i til i + n then ary[j])
+function sma ary, n then for i from 0 til ary.length - n then close-avg(for j from i til i + n then ary[j])
 
 # count the average of the input array's own property "close"
 function close-avg
-  console.log((it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length)
+  it = it.map -> it.close
+  (it.reduce (a, b) -> a + b) / it.length
 
 function ROC ary, n then for i from 0 til ary.length - n then (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
 
