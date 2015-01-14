@@ -31,29 +31,34 @@ function get-stock
           adj: parseFloat(that.7)
         }
     .then ->
+      percent-D one-data
+      return
       change = close-diff one-data
       features = get-features one-data
-      for x in features
-        console.log x.length
-      return
-#     raw-data = ml-format features, change
+      features = trim features
+      raw-data = ml-format features, change
 #     console.log(get-data(raw-data, \train, [0.25, 1]))
-#     fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
-#     fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.75])
+      fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
+      fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.75])
       #parse-data one-data
+
+trim = ->
+  min-length = it.0.length
+  for feature in it then min-length = min-length <? feature.length
+  for feature in it then feature.slice 0, min-length
 
 get-features = ->
   [
     (season it),
     (percent-K it),
     (percent-R it),
-    (percent-D it),
-    (slow-precent-D it),
+#   (percent-D it),
+#   (slow-precent-D it),
     (ROC it, 14),
     (momentum it),
-    (disparity it, 5),
-    (disparity it, 10),
-    (OSCP it)
+#   (disparity it, 5),
+#   (disparity it, 10),
+#   (OSCP it)
   ]
 
 function get-data data, type, range
@@ -206,10 +211,13 @@ function find-lowest-highest
 
   {low: low, high: high}
 
-function sma ary, n then for i from 0 til ary.length - n then close-avg(for j from i til i + n then ary[j])
+function sma ary, n
+  for i from 0 til ary.length - n
+    close-avg(for j from i til i + n then ary[j])
 
 # count the average of the input array's own property "close"
-function close-avg then (it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length
+function close-avg
+  console.log((it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length)
 
 function ROC ary, n then for i from 0 til ary.length - n then (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
 
