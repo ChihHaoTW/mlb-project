@@ -34,10 +34,6 @@ function get-stock
           adj: parseFloat(that.7)
         }
     .then ->
-#     percent-D one-data
-#     process.exit 0
-      wti = filter-date (get-index \wti), min, max
-      bdi = filter-date (get-index \bdi), min, max
       data = filter-date one-data, min, max
 #     bdi = stretch bdi, data
 #     wti = stretch wti, bdi
@@ -63,16 +59,16 @@ get-features = ->
     b,
     w,
     (season it),
-#   (percent-K it),
-#   (percent-R it),
-#   (percent-D it),
-#   (for x in it then A_D x),
+    (percent-K it),
+    (percent-R it),
+    (percent-D it),
+    (for x in it then A_D x),
 #   (slow-precent-D it),
-#   (ROC it, 14),
-#   (momentum it),
-#   (disparity it, 5),
-#   (disparity it, 10),
-#   (OSCP it)
+    (ROC it, 14),
+    (momentum it),
+    (disparity it, 5),
+    (disparity it, 10),
+    (OSCP it)
   ]
 
 function get-data data, type, range
@@ -130,9 +126,9 @@ function stretch a, b
 function close-diff
   _ = []
   for i from 0 til it.length
-    unless it[i + 1] then _.push 0
+    unless it[i - 1] then _.push 0
     else
-      if (it[i + 1].close - it[i].close) > 0 then _.push 1 else _.push 0
+      if (it[i - 1].close - it[i].close) > 0 then _.push 1 else _.push 0
   _
 
 function ml-format features, diff
