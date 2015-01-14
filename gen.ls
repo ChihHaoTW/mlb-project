@@ -12,9 +12,9 @@ loop
   console.log date.format \YYYY/MM/DD
   continue if ary.length is 0
   console.log ary
-  result.push {index: ary[0], change: ary[1], change-num: ary[2], change-percent: ary[3]}
+  result.push {date: (date.format \YYYY-MM-DD), index: ary[0]}
 
-fs.write-file-sync "./shipping", JSON.stringify result
+fs.write-file-sync "./shipping", JSON.stringify result, null, 2
 
 function date-shipping
   console.log it
