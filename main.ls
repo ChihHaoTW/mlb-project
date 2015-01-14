@@ -4,9 +4,12 @@ require! <[fs async line-reader moment]>
 stock-dir = \/home/mlb/stock/
 stock = <[2615 2612 2603 2605 6702 2609 5608 2617 2613 2637 2606 2208 2607 2611 5607]>
 
-orig-data = []
-wti = filter-date (get-index \wti), \2010-01-01, \2015-12-31
-bdi = filter-date (get-index \bdi), \2010-01-01, \2015-12-31
+[min, max] = [\2014-02-01, \2015-01-01]
+wti = filter-date (get-index \wti), min, max
+bdi = filter-date (get-index \bdi), min, max
+
+#wti = stretch wti, bdi
+#for i from 0 til wti.length then console.log wti[i].date.format!, bdi[i].date.format!
 
 #console.log (combine bdi, wti, \wti)
 #console.log(get-index \bdi)
@@ -33,12 +36,19 @@ function get-stock
     .then ->
 #     percent-D one-data
 #     process.exit 0
-      change = close-diff one-data
-      features = trim(get-features one-data)
+      wti = filter-date (get-index \wti), min, max
+      bdi = filter-date (get-index \bdi), min, max
+      data = filter-date one-data, min, max
+#     bdi = stretch bdi, data
+#     wti = stretch wti, bdi
+#     for i from 0 til wti.length then console.log "#{data[i].date.format!}, #{wti[i].date.format!}, #{bdi[i].date.format!}"
+#     return
+      change = close-diff data
+      features = trim(get-features data)
       raw-data = ml-format features, change
 #     console.log(get-data(raw-data, \train, [0.25, 1]))
       fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
-      fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.75])
+      fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.9])
       #parse-data one-data
 
 trim = ->
@@ -47,21 +57,23 @@ trim = ->
   for feature in it then feature.slice 0, min-length
 
 get-features = ->
+  b = for x in (stretch bdi, it) then x.index
+  w = for x in (stretch wti, bdi) then x.index
   [
+    b,
+    w,
     (season it),
-    (percent-K it),
-    (percent-R it),
-    (percent-D it),
-    (for x in it then A_D x),
-    (slow-precent-D it),
-    (ROC it, 14),
-    (momentum it),
-    (disparity it, 5),
-    (disparity it, 10),
-    (OSCP it)
+#   (percent-K it),
+#   (percent-R it),
+#   (percent-D it),
+#   (for x in it then A_D x),
+#   (slow-precent-D it),
+#   (ROC it, 14),
+#   (momentum it),
+#   (disparity it, 5),
+#   (disparity it, 10),
+#   (OSCP it)
   ]
-
-looping = (arr, func) -> for x in arr then func x
 
 function get-data data, type, range
   buf = ''
@@ -93,10 +105,18 @@ function stretch a, b
   [c, d] = if a.length > b.length then [a, b] else [b, a]
   n = 0
   _ = []
+# for i from 0 til c.length
+#   if c[i].date.is-after d[n].date
+#     _.push {date: d[n].date, index: d[n].index}
+#   else
+#     _.push {date: d[n+1].date, index: d[n+1].index}
   for i from 0 til c.length
-    if c[i].date.is-same d[n].date or c[i].date.is-after d[n].date then _.push d[n].index
+    if c[i].date.is-after d[n].date then _.push {date: d[n].date, index: d[n].index}
     else
-      if n < d.length-1	then _.push d[++n].index else _.push d[n].index
+      if n < d.length-1
+        n++
+        _.push {date: d[n].date, index: d[n].index}
+      else _.push {date: d[n].date, index: d[n].index}
   _
 
 #a = [1,2,3]
@@ -146,11 +166,7 @@ function get-index
     if moment(word.0).is-valid! then _.push {date: moment(word.0), index: parseFloat(word.1)}
   _
 
-function filter-date target, begin, end
-  _ = []
-  for day in target
-    if day.date.is-between begin, end then _.push day
-  _
+function filter-date target, begin, end then for day in target then if day.date.is-between begin, end then day
 
 function parse-data
  console.log percent-K it
