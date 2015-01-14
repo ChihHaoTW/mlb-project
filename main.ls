@@ -32,12 +32,29 @@ function get-stock
         }
     .then ->
       change = close-diff one-data
-      weather = season one-data
-      raw-data = ml-format [weather], change
+      features = get-features one-data
+      for x in features
+        console.log x.length
+      return
+#     raw-data = ml-format features, change
 #     console.log(get-data(raw-data, \train, [0.25, 1]))
-      fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
-      fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.75])
+#     fs.write-file-sync "stock/#number/predict_data", get-data(raw-data, \predict, [0, 0.25])
+#     fs.write-file-sync "stock/#number/train_data", get-data(raw-data, \train, [0.25, 0.75])
       #parse-data one-data
+
+get-features = ->
+  [
+    (season it),
+    (percent-K it),
+    (percent-R it),
+    (percent-D it),
+    (slow-precent-D it),
+    (ROC it, 14),
+    (momentum it),
+    (disparity it, 5),
+    (disparity it, 10),
+    (OSCP it)
+  ]
 
 function get-data data, type, range
   buf = ''
@@ -148,9 +165,9 @@ function percent-K
   # ary = it.reverse!
   # [low, high] = [ary[0][\low], ary[0][\high]]
 
-  for i from 0 til ary.length - 14
-    [low, high] = find-lowest-highest(for j from i til i + 14 then ary[j])[\low, \high]
-    result.push((ary[i][\close] - low) / (high - low) * 100)
+  for i from 0 til it.length - 14
+    [low, high] = find-lowest-highest(for j from i til i + 14 then it[j])[\low, \high]
+    result.push (it[i][\close] - low) / (high - low) * 100
 
   result
 
@@ -167,20 +184,18 @@ function percent-K
 
 function percent-R
   result = []
-  for i from 0 til ary.length - 14
-    [low, high] = find-lowest-highest(for j from i til i + 14 then ary[j])[\low, \high]
-    result.push((high - ary[i][\close]) / (high - low) * 100)
+  for i from 0 til it.length - 14
+    [low, high] = find-lowest-highest(for j from i til i + 14 then it[j])[\low, \high]
+    result.push((high - it[i][\close]) / (high - low) * 100)
 
   result
 
 # input the result of %K
-function percent-D
-  sma it, 3
+function percent-D then sma it, 3
 
 # input the result of %K
 # OR can input the result of %D to %D
-function slow-pwecent-D
-  sma (percent-D it), 3
+function slow-precent-D then sma (percent-D it), 3
 
 # input : a array of obj which has its own propertys "low" & "high"
 function find-lowest-highest
@@ -191,36 +206,20 @@ function find-lowest-highest
 
   {low: low, high: high}
 
-function sma ary, n
-  result = []
-  for i from 0 til ary.length - n
-    result.push close-avg(for j from i til i + n then ary[j])
-
-  result
+function sma ary, n then for i from 0 til ary.length - n then close-avg(for j from i til i + n then ary[j])
 
 # count the average of the input array's own property "close"
-function close-avg
-  (it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length
+function close-avg then (it.reduce (a, b) -> (a[\close] + b[\close]), 0) / it.length
 
-function ROC ary, n
-  result = []
-  for i from 0 til ary.length - n
-    result.push (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
+function ROC ary, n then for i from 0 til ary.length - n then (ary[i][\close] - ary[i + n][\close]) / ary[i + n][\close] * 100
 
-  result
-
-function momentum
-  result = []
-  for i from 0 til it.length - 4
-    result.push (it[i][\close] - it[i + 4][\close]) / it[i + 4][\close]
-
-  result
+function momentum then for i from 0 til it.length - 4 then (it[i][\close] - it[i + 4][\close]) / it[i + 4][\close]
 
 function disparity ary, n
   result = []
-  sma-n = sma it, n
+  sma-n = sma ary, n
   for i from 0 til sma-n.length
-    result.push (it[i][\close] / sma-n[i] * 100)
+    result.push (ary[i][\close] / sma-n[i] * 100)
 
   result
 
@@ -234,9 +233,7 @@ function OSCP
   result
 
 !function mkdir
-  if !fs.exists-sync it
-    fs.mkdir-sync it
-  else if !fs.stat-sync it .is-directory
-    fs.mkdir-sync it
+  if !fs.exists-sync it then fs.mkdir-sync it
+  else if !fs.stat-sync it .is-directory then fs.mkdir-sync it
 
 # vi:et:sw=2:ts=2
